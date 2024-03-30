@@ -1,0 +1,36 @@
+name: Rust WebSocket CI
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      # Build server
+      - name: Build server
+        run: |
+          cd server
+          cargo build --verbose
+
+      # Build client
+      - name: Build client
+        run: |
+          cd client
+          cargo build --verbose
+
+      # Custom script to handle clients and check logs
+      - name: Run clients and check logs
+        run: ./test_clients.sh
